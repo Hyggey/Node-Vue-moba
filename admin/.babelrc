@@ -16,6 +16,7 @@
         "styleLibraryName": "theme-chalk"
       },
       "transform-vue-jsx", "transform-runtime"
-    ]
+    ],
+    "transform-runtime"
     ]
 }

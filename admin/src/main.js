@@ -5,7 +5,14 @@ import App from './App'
 import router from './router'
 
 // 引入自定义组件和ui库
-import '../src/public/js/common_components.js'
+import '@/public/js/common_components.js'
+
+//  全局引入公共样式
+import "@/public/css/reset.css"
+
+// 全局引入axios请求方法
+import axios from '@/public/js/axiosCommon.js'
+Vue.prototype.$axios = axios.http
 
 Vue.config.productionTip = false
 
