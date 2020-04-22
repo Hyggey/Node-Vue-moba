@@ -1,19 +1,25 @@
 <template>
     <div>
-        <h1>{{id?'编辑':'新增'}}分类</h1>
-        <el-form label-width="120px" @submit.native="save">
-            <el-form-item label="上级分类">
-                <el-select v-model="model.parent">
+        <h1>{{id?'编辑':'新增'}}文章</h1>
+        <el-form label-width="120px" @submit.native.prevent="save">
+            <el-form-item label="所属分类">
+                <el-select v-model="model.categories" multiple>
                     <el-option 
-                    v-for="item in parents"
+                    v-for="item in categories"
                     :key="item._id"
                     :label="item.name"
                     :value="item._id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称">
-                <el-input v-model="model.name"></el-input>
+            <el-form-item label="标题">
+                <el-input v-model="model.title"></el-input>
+            </el-form-item>
+            <el-form-item label="详情">
+                <vue-editor
+                useCustomImageHandler
+                @image-added="handleImageAdded"
+                 v-model="model.body"></vue-editor>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" native-type="submit">保存</el-button>
@@ -23,6 +29,7 @@
 </template>
 
 <script>
+import {VueEditor} from 'vue2-editor'
 export default {
     // 自己传自己
     props:{
@@ -30,19 +37,35 @@ export default {
             type:String
         }
     },
+    components:{
+        VueEditor
+    },
     data(){
         return {
             model:{},  // 新建的分类名字
-            parents:[]  // 分类父级列表
+            categories:[]  // 分类父级列表
         }
     },
     created() {
         console.log(this.id)
         // 意思是如果id存在，就执行fetch方法
         this.id && this.fetch()
-        this.fetchParents()
+        this.fetchCategories()
     },
     methods: {
+        // 处理富文本编辑器图片的方法
+        async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      // An example of using FormData
+      // NOTE: Your key could be different such as:
+      // formData.append('file', file)
+ 
+            var formData = new FormData();
+            formData.append("file", file);
+
+            const res = await this.$axios.post('upload',formData)
+            Editor.insertEmbed(cursorLocation, "image", res.data.url);
+            resetUploader();
+    },
         // 新增分类的方法,下面是老式写法，也可以用
         // save(){
         //     this.$axios({
@@ -64,20 +87,20 @@ export default {
         async save(){
             let res;
             if(this.id){
-                res = await this.$axios.put(`rest/categories/${this.id}`,this.model)
+                res = await this.$axios.put(`rest/articles/${this.id}`,this.model)
             }else{
-                res = await this.$axios.post(`rest/categories`,this.model)
+                res = await this.$axios.post(`rest/articles`,this.model)
             }
-            this.$router.push('/categories/list')
+            this.$router.push('/articles/list')
             this.$message({
                     type:'success',
                     message:'保存成功'
                 })
         },
-        // 获取分类名字的方法
+        // 获取文章详情的方法
         async fetch(){
             // 只能这样写
-            const res = await this.$axios.get(`rest/categories/${this.id}`)
+            const res = await this.$axios.get(`rest/articles/${this.id}`)
             // 不能这样写，因为这样写请求的url地址多了一个0=？，而0=是不要的
             // http://localhost:3000/admin/api/categories?0=5e9dc555ba604936a0a408d4
             // const res = await this.$axios({
@@ -88,10 +111,10 @@ export default {
             console.log(res)
             this.model = res.data
         },
-        async fetchParents(){
+        async fetchCategories(){
             const res = await this.$axios.get(`rest/categories`)
             console.log(res)
-            this.parents = res.data
+            this.categories = res.data
         }
     },
 }

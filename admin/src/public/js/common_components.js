@@ -21,7 +21,14 @@ import {
     FormItem,
     Input,
     Message,
-    MessageBox
+    MessageBox,
+    Option,
+    Upload,
+    Rate,
+    Tabs,
+    TabPane,
+    Row,
+    Col,
  } from 'element-ui';
 
 //  message需要挂载载vue实例，因为vue实例上没有这个方法
@@ -45,6 +52,14 @@ Vue.component(TableColumn.name, TableColumn)
 Vue.component(Form.name, Form)
 Vue.component(FormItem.name, FormItem)
 Vue.component(Input.name, Input)
+Vue.component(Select.name, Select)
+Vue.component(Option.name, Option)
 // Vue.component(Message.name, Message)
+Vue.component(Upload.name, Upload)
+Vue.component(Rate.name, Rate)
+Vue.component(Tabs.name, Tabs)
+Vue.component(TabPane.name, TabPane)
+Vue.component(Row.name, Row)
+Vue.component(Col.name, Col)
 
 

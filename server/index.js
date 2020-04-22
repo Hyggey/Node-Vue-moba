@@ -8,6 +8,9 @@ app.use(require('cors')())
 // 客户端提交过来的req.body
 app.use(express.json())
 
+// 开辟出静态资源可以访问
+app.use('/uploads',express.static(__dirname + '/uploads'))
+
 // 引入admin的路由
 require ('./routes/admin')(app)
 

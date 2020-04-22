@@ -1,19 +1,12 @@
 <template>
     <div>
-        <h1>{{id?'编辑':'新增'}}分类</h1>
-        <el-form label-width="120px" @submit.native="save">
-            <el-form-item label="上级分类">
-                <el-select v-model="model.parent">
-                    <el-option 
-                    v-for="item in parents"
-                    :key="item._id"
-                    :label="item.name"
-                    :value="item._id">
-                    </el-option>
-                </el-select>
+        <h1>{{id?'编辑':'新增'}}管理员</h1>
+        <el-form label-width="120px" @submit.native.prevent="save">
+            <el-form-item label="用户名">
+                <el-input v-model="model.username"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
-                <el-input v-model="model.name"></el-input>
+            <el-form-item label="密码">
+                <el-input type="password" v-model="model.password"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" native-type="submit">保存</el-button>
@@ -33,7 +26,6 @@ export default {
     data(){
         return {
             model:{},  // 新建的分类名字
-            parents:[]  // 分类父级列表
         }
     },
     created() {
@@ -64,11 +56,11 @@ export default {
         async save(){
             let res;
             if(this.id){
-                res = await this.$axios.put(`rest/categories/${this.id}`,this.model)
+                res = await this.$axios.put(`rest/admin_users/${this.id}`,this.model)
             }else{
-                res = await this.$axios.post(`rest/categories`,this.model)
+                res = await this.$axios.post(`rest/admin_users`,this.model)
             }
-            this.$router.push('/categories/list')
+            this.$router.push('/admin_users/list')
             this.$message({
                     type:'success',
                     message:'保存成功'
@@ -77,7 +69,7 @@ export default {
         // 获取分类名字的方法
         async fetch(){
             // 只能这样写
-            const res = await this.$axios.get(`rest/categories/${this.id}`)
+            const res = await this.$axios.get(`rest/admin_users/${this.id}`)
             // 不能这样写，因为这样写请求的url地址多了一个0=？，而0=是不要的
             // http://localhost:3000/admin/api/categories?0=5e9dc555ba604936a0a408d4
             // const res = await this.$axios({
@@ -88,11 +80,6 @@ export default {
             console.log(res)
             this.model = res.data
         },
-        async fetchParents(){
-            const res = await this.$axios.get(`rest/categories`)
-            console.log(res)
-            this.parents = res.data
-        }
     },
 }
 </script>

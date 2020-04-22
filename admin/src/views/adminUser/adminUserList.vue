@@ -1,18 +1,18 @@
 <template>
     <div>
-        <h1>分类列表</h1>
+        <h1>管理员列表</h1>
         <el-table :data="tableData">
             <el-table-column prop="_id" label="ID" width="240"></el-table-column>
             <!-- 下面的parent是在数据库模型中设计的，所以可以直接用 -->
-            <el-table-column prop="parent.name" label="上级分类"></el-table-column>
-            <el-table-column prop="name" label="分类名称"></el-table-column>
+            <!-- <el-table-column prop="parent.name" label="上级分类"></el-table-column> -->
+            <el-table-column prop="username" label="用户名"></el-table-column>
             <el-table-column
                 fixed="right"
                 label="操作"
                 width="200">
             <template slot-scope="scope">
                 <el-button 
-                @click="$router.push(`/categories/creat/${scope.row._id}`)"
+                @click="$router.push(`/admin_users/creat/${scope.row._id}`)"
                  type="primary" size="small">编辑</el-button>
                  <el-button 
                 @click="remove(scope.row)"
@@ -47,17 +47,17 @@ export default {
         async fetch(){
             const res = await this.$axios({
                 method:'get',
-                url:'rest/categories'
+                url:'rest/admin_users'
             })
             this.tableData = res.data
         },
         async remove(row){
-            this.$confirm(`确定是否要删除分类"${row.name}"?`, '提示', {
+            this.$confirm(`确定是否要删除"${row.name}"?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(async () => {
-                    const res  = await this.$axios.delete(`rest/categories/${row._id}`)
+                    const res  = await this.$axios.delete(`rest/admin_users/${row._id}`)
                 this.$message({
                     type: 'success',
                     message: '删除成功!'
